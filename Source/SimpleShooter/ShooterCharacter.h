@@ -51,10 +51,14 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	float Health;
+
+	UPROPERTY(EditAnywhere)
+	bool bRevert = true;
 	
 	UPROPERTY()
 	AGun* Gun;
 	
 	void MoveForward(float Value);
 	void MoveRight(float Value);
+	void LookUp(float Value);
 };
