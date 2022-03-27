@@ -16,7 +16,7 @@ namespace BlackboardKey
 void AShooterAIController::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	PlayerPawn = UGameplayStatics::GetPlayerPawn(this, 0);
 	RunBehaviorTree(AIBehaviorTree);
 	GetBlackboardComponent()->SetValueAsVector(BlackboardKey::StartLocation, GetPawn()->GetActorLocation());
@@ -25,16 +25,4 @@ void AShooterAIController::BeginPlay()
 void AShooterAIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
-	const bool InLOS = LineOfSightTo(PlayerPawn);
-	
-	if (InLOS)
-	{
-		GetBlackboardComponent()->SetValueAsVector(BlackboardKey::PlayerLocation, PlayerPawn->GetActorLocation());
-		GetBlackboardComponent()->SetValueAsVector(BlackboardKey::LastKnownLocation, PlayerPawn->GetActorLocation());
-	}
-	else
-	{
-		GetBlackboardComponent()->ClearValue(BlackboardKey::PlayerLocation);
-	}
 }
