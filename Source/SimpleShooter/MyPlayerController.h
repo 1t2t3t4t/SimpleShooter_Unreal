@@ -16,6 +16,9 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UUserWidget> LoseGameWidgetClass;
+	
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UUserWidget> WinGameWidgetClass;
 
 	UPROPERTY()
 	FTimerHandle RestartTimer;

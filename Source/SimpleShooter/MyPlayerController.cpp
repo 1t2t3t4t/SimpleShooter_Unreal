@@ -6,7 +6,8 @@ void AMyPlayerController::GameHasEnded(AActor* EndGameFocus, bool bIsWinner)
 {
 	Super::GameHasEnded(EndGameFocus, bIsWinner);
 
-	if (UUserWidget* Widget = CreateWidget(this, LoseGameWidgetClass))
+	UUserWidget* Widget = bIsWinner ?  CreateWidget(this, WinGameWidgetClass) : CreateWidget(this, LoseGameWidgetClass);
+	if (Widget)
 	{
 		Widget->AddToViewport();
 	}

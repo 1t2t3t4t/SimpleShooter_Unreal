@@ -18,14 +18,13 @@ AShooterCharacter::AShooterCharacter()
 
 	CameraComponent->SetupAttachment(SpringArmComponent, USpringArmComponent::SocketName);
 	SpringArmComponent->SetupAttachment(RootComponent);
+	Health = MaxHealth;
 }
 
 // Called when the game starts or when spawned
 void AShooterCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	Health = MaxHealth;
 	GetMesh()->HideBoneByName(TEXT("weapon_r"), PBO_None);
 
 	Gun = GetWorld()->SpawnActor<AGun>(GunClass);
@@ -57,6 +56,8 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 float AShooterCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator,
 	AActor* DamageCauser)
 {
+	if (!GetAlive()) return 0.f;
+	
 	const float DamageApplied = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 	const float MinDamage = FMath::Min(Health, DamageApplied);
 	Health -= MinDamage;

@@ -16,4 +16,12 @@ class SIMPLESHOOTER_API ALastManStandingGameMode : public ASimpleShooterGameMode
 
 public:
 	virtual void PawnKilled(APawn* const Pawn) override;
+	void EndGame(const bool bIsPlayerWin) const;
+
+protected:
+	virtual void BeginPlay() override;
+	int32 CalculateEnemies() const;
+
+private:
+	int32 EnemyCount = 0;
 };
