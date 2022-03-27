@@ -4,7 +4,7 @@
 #include "BTTask_Shoot.h"
 
 #include "AIController.h"
-#include "SimpleShooter/ShooterCharacter.h"
+#include "SimpleShooter/Character/ShooterCharacter.h"
 
 EBTNodeResult::Type UBTTask_Shoot::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {

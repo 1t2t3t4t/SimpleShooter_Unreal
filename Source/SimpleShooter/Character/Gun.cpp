@@ -42,8 +42,12 @@ void AGun::Shoot()
 	OwnerPawn->GetController()->GetPlayerViewPoint(Loc, Rot);
 
 	FHitResult Result;
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(this);
+	Params.AddIgnoredActor(GetOwner());
+	
 	const FVector End = Loc + Rot.Vector() * MaxRange;
-	const bool bSuccess = GetWorld()->LineTraceSingleByChannel(Result, Loc, End, ECC_GameTraceChannel1);
+	const bool bSuccess = GetWorld()->LineTraceSingleByChannel(Result, Loc, End, ECC_GameTraceChannel1, Params);
 	
 	if (bSuccess)
 	{

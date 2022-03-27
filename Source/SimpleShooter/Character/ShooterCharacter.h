@@ -30,6 +30,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual float TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator,
 		AActor* DamageCauser) override;
+	void Dead();
 
 	UFUNCTION(BlueprintPure)
 	bool GetAlive() const;
