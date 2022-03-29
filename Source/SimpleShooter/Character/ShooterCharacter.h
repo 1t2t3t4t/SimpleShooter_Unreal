@@ -9,7 +9,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "ShooterCharacter.generated.h"
 
-UCLASS()
+UCLASS(Abstract)
 class SIMPLESHOOTER_API AShooterCharacter : public ACharacter
 {
 	GENERATED_BODY()

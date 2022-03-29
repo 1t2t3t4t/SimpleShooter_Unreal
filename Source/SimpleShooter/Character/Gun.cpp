@@ -21,13 +21,22 @@ AGun::AGun()
 void AGun::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
 void AGun::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+bool AGun::ShootLineTrace(const FVector& Loc, const FRotator Rot, FHitResult& Result) const
+{
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(this);
+	Params.AddIgnoredActor(GetOwner());
+	
+	const FVector End = Loc + Rot.Vector() * MaxRange;
+	return GetWorld()->LineTraceSingleByChannel(Result, Loc, End, ECC_GameTraceChannel1, Params);
 }
 
 void AGun::Shoot()
@@ -38,22 +47,26 @@ void AGun::Shoot()
 	FRotator Rot;
 	APawn* OwnerPawn = Cast<APawn>(GetOwner());
 	if (!OwnerPawn) return;
-
 	OwnerPawn->GetController()->GetPlayerViewPoint(Loc, Rot);
 
+	PlayShootSound();
+	
 	FHitResult Result;
-	FCollisionQueryParams Params;
-	Params.AddIgnoredActor(this);
-	Params.AddIgnoredActor(GetOwner());
-	
-	const FVector End = Loc + Rot.Vector() * MaxRange;
-	const bool bSuccess = GetWorld()->LineTraceSingleByChannel(Result, Loc, End, ECC_GameTraceChannel1, Params);
-	
-	if (bSuccess)
+	if (ShootLineTrace(Loc, Rot, Result))
 	{
 		UGameplayStatics::SpawnEmitterAtLocation(this, GunImpact, Result.ImpactPoint, Result.ImpactNormal.Rotation());
 		const FPointDamageEvent DamageEvent(Damage, Result, Rot.Vector(), nullptr);
 		Result.GetActor()->TakeDamage(Damage, DamageEvent, OwnerPawn->GetController(), OwnerPawn);
+		PlayImpactSound(Result.ImpactPoint);
 	}
 }
 
+void AGun::PlayShootSound() const
+{
+	UGameplayStatics::SpawnSoundAttached(ShootSound, MeshComponent, TEXT("MuzzleFlashSocket"));
+}
+
+void AGun::PlayImpactSound(const FVector& Location) const
+{
+	UGameplayStatics::SpawnSoundAtLocation(this, ImpactSound, Location);
+}

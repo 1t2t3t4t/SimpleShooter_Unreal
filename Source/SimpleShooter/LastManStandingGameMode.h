@@ -21,7 +21,4 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	int32 CalculateEnemies() const;
-
-private:
-	int32 EnemyCount = 0;
 };

@@ -10,7 +10,6 @@
 void ALastManStandingGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-	EnemyCount = CalculateEnemies();
 }
 
 int32 ALastManStandingGameMode::CalculateEnemies() const
@@ -36,17 +35,10 @@ void ALastManStandingGameMode::PawnKilled(APawn* const Pawn)
 	if (Cast<APlayerController>(Pawn->GetController()))
 	{
 		EndGame(false);
-	}
-	else
-	{
-		EnemyCount--;
-	}
-
-	if (EnemyCount == 0)
+	} else if (CalculateEnemies() == 0)
 	{
 		EndGame(true);
 	}
-	
 }
 
 void ALastManStandingGameMode::EndGame(const bool bIsPlayerWin) const

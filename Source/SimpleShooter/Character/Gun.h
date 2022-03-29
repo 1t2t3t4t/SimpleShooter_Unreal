@@ -22,8 +22,11 @@ protected:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	bool ShootLineTrace(const FVector& Loc, FRotator Rot, FHitResult& Result) const;
 
 	void Shoot();
+	void PlayShootSound() const;
+	void PlayImpactSound(const FVector& Location) const;
 
 private:
 	UPROPERTY(VisibleAnywhere)
@@ -34,6 +37,12 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	UParticleSystem* GunImpact;
+
+	UPROPERTY(EditAnywhere)
+	USoundBase* ShootSound;
+
+	UPROPERTY(EditAnywhere)
+	USoundBase* ImpactSound;
 
 	UPROPERTY(EditAnywhere)
 	float MaxRange = 100.f;
