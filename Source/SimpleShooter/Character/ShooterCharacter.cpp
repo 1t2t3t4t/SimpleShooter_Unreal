@@ -18,13 +18,13 @@ AShooterCharacter::AShooterCharacter()
 
 	CameraComponent->SetupAttachment(SpringArmComponent, USpringArmComponent::SocketName);
 	SpringArmComponent->SetupAttachment(RootComponent);
+	Health = MaxHealth;
 }
 
 // Called when the game starts or when spawned
 void AShooterCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	Health = MaxHealth;
 	GetMesh()->HideBoneByName(TEXT("weapon_r"), PBO_None);
 
 	Gun = GetWorld()->SpawnActor<AGun>(GunClass);
@@ -81,6 +81,11 @@ void AShooterCharacter::Dead()
 bool AShooterCharacter::GetAlive() const
 {
 	return Health > 0.f;
+}
+
+float AShooterCharacter::GetHealthPercent() const
+{
+	return Health / MaxHealth;
 }
 
 void AShooterCharacter::Shoot()

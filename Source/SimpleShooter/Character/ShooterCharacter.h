@@ -35,6 +35,9 @@ public:
 	UFUNCTION(BlueprintPure)
 	bool GetAlive() const;
 
+	UFUNCTION(BlueprintPure)
+	float GetHealthPercent() const;
+
 	void Shoot();
 
 private:
