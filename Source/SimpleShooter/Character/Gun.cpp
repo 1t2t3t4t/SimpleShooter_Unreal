@@ -41,6 +41,7 @@ bool AGun::ShootLineTrace(const FVector& Loc, const FRotator Rot, FHitResult& Re
 
 void AGun::Shoot()
 {
+	if (CurrentAmmo == 0) return;
 	UGameplayStatics::SpawnEmitterAttached(GunMuzzle, MeshComponent, TEXT("MuzzleFlashSocket"));
 
 	FVector Loc;
@@ -50,9 +51,10 @@ void AGun::Shoot()
 	OwnerPawn->GetController()->GetPlayerViewPoint(Loc, Rot);
 
 	PlayShootSound();
+	CurrentAmmo--;
 	
 	FHitResult Result;
-	if (ShootLineTrace(Loc, Rot, Result))
+	if (ShootLineTrace(Loc, Rot, Result) && OwnerPawn->GetController())
 	{
 		UGameplayStatics::SpawnEmitterAtLocation(this, GunImpact, Result.ImpactPoint, Result.ImpactNormal.Rotation());
 		const FPointDamageEvent DamageEvent(Damage, Result, Rot.Vector(), nullptr);

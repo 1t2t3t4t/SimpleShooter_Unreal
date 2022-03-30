@@ -7,6 +7,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "SimpleShooter/Item/Item.h"
 #include "ShooterCharacter.generated.h"
 
 UCLASS(Abstract)
@@ -21,6 +22,11 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	
+	UFUNCTION()
+	void OnBeginCollision(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
+	                      bool bFromSweep, const FHitResult& SweepResult);
+	void PickupItem(const AItem* Item);
 
 public:	
 	// Called every frame
@@ -37,6 +43,9 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	float GetHealthPercent() const;
+
+	UFUNCTION(BlueprintPure)
+	int GetCurrentAmmo() const;
 
 	void Shoot();
 
@@ -61,6 +70,8 @@ private:
 	
 	UPROPERTY()
 	AGun* Gun;
+
+	void SetupCollision();
 	
 	void MoveForward(float Value);
 	void MoveRight(float Value);

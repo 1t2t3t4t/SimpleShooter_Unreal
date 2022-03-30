@@ -5,6 +5,9 @@
 
 #include "Components/CapsuleComponent.h"
 #include "SimpleShooter/SimpleShooterGameModeBase.h"
+#include "SimpleShooter/Item/DA_Ammo.h"
+#include "SimpleShooter/Item/Item.h"
+#include "SimpleShooter/Item/Pickable.h"
 
 // Sets default values
 AShooterCharacter::AShooterCharacter()
@@ -30,6 +33,33 @@ void AShooterCharacter::BeginPlay()
 	Gun = GetWorld()->SpawnActor<AGun>(GunClass);
 	Gun->SetOwner(this);
 	Gun->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("WeaponSocket"));
+	SetupCollision();
+}
+
+void AShooterCharacter::SetupCollision()
+{
+	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AShooterCharacter::OnBeginCollision);
+}
+
+void AShooterCharacter::OnBeginCollision(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Begin overlap from callback"));
+
+	if (OtherActor->Implements<UPickable>() && IsPlayerControlled())
+	{
+		IPickable::Execute_Pick(OtherActor, this);
+		PickupItem(Cast<AItem>(OtherActor));
+	}
+}
+
+void AShooterCharacter::PickupItem(const AItem* Item)
+{
+	if (Item == nullptr) return;
+
+	if (const UDA_Ammo* AmmoInfo = Cast<UDA_Ammo>(Item->ItemData))
+	{
+		Gun->CurrentAmmo += AmmoInfo->Amount;
+	}
 }
 
 // Called every frame
@@ -86,6 +116,11 @@ bool AShooterCharacter::GetAlive() const
 float AShooterCharacter::GetHealthPercent() const
 {
 	return Health / MaxHealth;
+}
+
+int AShooterCharacter::GetCurrentAmmo() const
+{
+	return Gun->CurrentAmmo;
 }
 
 void AShooterCharacter::Shoot()

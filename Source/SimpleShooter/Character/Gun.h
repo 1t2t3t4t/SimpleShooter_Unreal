@@ -20,6 +20,9 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	int CurrentAmmo = 10;
+	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	bool ShootLineTrace(const FVector& Loc, FRotator Rot, FHitResult& Result) const;
