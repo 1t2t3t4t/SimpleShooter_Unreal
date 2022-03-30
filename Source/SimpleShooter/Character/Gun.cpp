@@ -5,6 +5,7 @@
 
 #include "DrawDebugHelpers.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
 AGun::AGun()
@@ -34,8 +35,12 @@ bool AGun::ShootLineTrace(const FVector& Loc, const FRotator Rot, FHitResult& Re
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(this);
 	Params.AddIgnoredActor(GetOwner());
+
+	FVector ShootDir = UKismetMathLibrary::InverseTransformDirection(GetActorTransform(), Rot.Vector() * MaxRange);
+	ShootDir.X += FMath::RandRange(MinRand, MaxRand);
+	ShootDir.Z += FMath::RandRange(MinRand, MaxRand);
 	
-	const FVector End = Loc + Rot.Vector() * MaxRange;
+	const FVector End = Loc + UKismetMathLibrary::TransformDirection(GetActorTransform(), ShootDir);
 	return GetWorld()->LineTraceSingleByChannel(Result, Loc, End, ECC_GameTraceChannel1, Params);
 }
 

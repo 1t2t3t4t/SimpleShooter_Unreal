@@ -52,4 +52,10 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	float Damage = 10.f;
+
+	UPROPERTY(EditDefaultsOnly)
+	float MinRand = -1.f;
+
+	UPROPERTY(EditDefaultsOnly)
+	float MaxRand = 1.f;
 };
