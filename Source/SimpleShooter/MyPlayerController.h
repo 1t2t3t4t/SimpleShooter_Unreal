@@ -31,4 +31,6 @@ private:
 
 	UPROPERTY()
 	UUserWidget* HUDWidget;
+
+	
 };

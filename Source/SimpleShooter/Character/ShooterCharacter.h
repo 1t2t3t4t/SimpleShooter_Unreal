@@ -37,6 +37,7 @@ public:
 	virtual float TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator,
 		AActor* DamageCauser) override;
 	void Dead();
+	void Reload();
 
 	UFUNCTION(BlueprintPure)
 	bool GetAlive() const;
@@ -61,6 +62,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	float MaxHealth = 100.f;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Animations")
+	UAnimMontage* ReloadMontage;
 
 	UPROPERTY(VisibleAnywhere)
 	float Health;

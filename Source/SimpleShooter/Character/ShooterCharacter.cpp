@@ -28,6 +28,7 @@ AShooterCharacter::AShooterCharacter()
 void AShooterCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	Health = MaxHealth;
 	GetMesh()->HideBoneByName(TEXT("weapon_r"), PBO_None);
 
 	Gun = GetWorld()->SpawnActor<AGun>(GunClass);
@@ -81,6 +82,7 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 	PlayerInputComponent->BindAction(TEXT("Jump"), IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction(TEXT("Shoot"), IE_Pressed, this, &AShooterCharacter::Shoot);
+	PlayerInputComponent->BindAction(TEXT("Reload"), IE_Pressed, this, &AShooterCharacter::Reload);
 }
 
 float AShooterCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator,
@@ -106,6 +108,11 @@ void AShooterCharacter::Dead()
 	
 	DetachFromControllerPendingDestroy();
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+
+void AShooterCharacter::Reload()
+{
+	PlayAnimMontage(ReloadMontage);
 }
 
 bool AShooterCharacter::GetAlive() const
