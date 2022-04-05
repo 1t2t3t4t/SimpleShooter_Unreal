@@ -22,6 +22,9 @@ protected:
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	int CurrentAmmo = 10;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int MagazineAmmo = 20;
 	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -31,7 +34,13 @@ public:
 	void PlayShootSound() const;
 	void PlayImpactSound(const FVector& Location) const;
 
+	void Reload();
+	int GetCapAmmo() const;
+	
 private:
+	UPROPERTY(EditDefaultsOnly)
+	int CapAmmo = 10;
+	
 	UPROPERTY(VisibleAnywhere)
 	USkeletalMeshComponent* MeshComponent;
 

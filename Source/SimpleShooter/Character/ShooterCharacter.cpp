@@ -59,7 +59,7 @@ void AShooterCharacter::PickupItem(const AItem* Item)
 
 	if (const UDA_Ammo* AmmoInfo = Cast<UDA_Ammo>(Item->ItemData))
 	{
-		Gun->CurrentAmmo += AmmoInfo->Amount;
+		Gun->MagazineAmmo += AmmoInfo->Amount;
 	}
 }
 
@@ -112,7 +112,12 @@ void AShooterCharacter::Dead()
 
 void AShooterCharacter::Reload()
 {
+	if (Gun->MagazineAmmo == 0)
+	{
+		return;
+	}
 	PlayAnimMontage(ReloadMontage);
+	Gun->Reload();
 }
 
 bool AShooterCharacter::GetAlive() const

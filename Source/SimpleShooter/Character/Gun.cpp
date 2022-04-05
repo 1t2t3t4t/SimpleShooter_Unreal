@@ -77,3 +77,15 @@ void AGun::PlayImpactSound(const FVector& Location) const
 {
 	UGameplayStatics::SpawnSoundAtLocation(this, ImpactSound, Location);
 }
+
+void AGun::Reload()
+{
+	const int VacantAmmo = FMath::Min(GetCapAmmo() - CurrentAmmo, MagazineAmmo);
+	MagazineAmmo -= VacantAmmo;
+	CurrentAmmo += VacantAmmo;
+}
+
+int AGun::GetCapAmmo() const
+{
+	return CapAmmo;
+}
