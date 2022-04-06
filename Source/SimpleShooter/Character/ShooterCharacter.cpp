@@ -116,6 +116,7 @@ void AShooterCharacter::Reload()
 	{
 		return;
 	}
+	IsReloading = true;
 	PlayAnimMontage(ReloadMontage);
 	Gun->Reload();
 }
@@ -135,8 +136,17 @@ int AShooterCharacter::GetCurrentAmmo() const
 	return Gun->CurrentAmmo;
 }
 
+void AShooterCharacter::FinishReloading()
+{
+	IsReloading = false;
+}
+
 void AShooterCharacter::Shoot()
 {
+	if (IsReloading)
+	{
+		return;
+	}
 	Gun->Shoot();
 }
 

@@ -2,6 +2,8 @@
 
 #include "Item.h"
 
+#include "Blueprint/UserWidget.h"
+
 // Sets default values
 AItem::AItem()
 {
@@ -34,5 +36,10 @@ void AItem::Pick_Implementation(const AActor* ByActor)
 {
 	IPickable::Pick_Implementation(ByActor);
 	Destroy();
+}
+
+FString AItem::GetItemName() const
+{
+	return Name;
 }
 

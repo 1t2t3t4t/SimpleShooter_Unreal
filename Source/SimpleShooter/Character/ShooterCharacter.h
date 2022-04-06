@@ -48,6 +48,9 @@ public:
 	UFUNCTION(BlueprintPure)
 	int GetCurrentAmmo() const;
 
+	UFUNCTION(BlueprintCallable)
+	void FinishReloading();
+	
 	void Shoot();
 
 private:
@@ -74,6 +77,8 @@ private:
 	
 	UPROPERTY()
 	AGun* Gun;
+
+	bool IsReloading = false;
 
 	void SetupCollision();
 	

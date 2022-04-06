@@ -59,7 +59,7 @@ void AGun::Shoot()
 	CurrentAmmo--;
 	
 	FHitResult Result;
-	if (ShootLineTrace(Loc, Rot, Result) && OwnerPawn->GetController())
+	if (ShootLineTrace(Loc, Rot, Result) && OwnerPawn->GetController() && Result.GetActor())
 	{
 		UGameplayStatics::SpawnEmitterAtLocation(this, GunImpact, Result.ImpactPoint, Result.ImpactNormal.Rotation());
 		const FPointDamageEvent DamageEvent(Damage, Result, Rot.Vector(), nullptr);

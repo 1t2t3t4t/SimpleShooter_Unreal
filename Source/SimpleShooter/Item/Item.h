@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Pickable.h"
 #include "Components/BoxComponent.h"
+#include "Components/WidgetComponent.h"
 #include "GameFramework/Actor.h"
 #include "Item.generated.h"
 
@@ -30,10 +31,16 @@ public:
 
 	virtual void Pick_Implementation(const AActor* ByActor) override;
 
+	UFUNCTION(BlueprintPure)
+	FString GetItemName() const;
+
 private:
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* MeshComponent;
 
 	UPROPERTY(VisibleAnywhere)
 	UBoxComponent* BoxCollision;
+
+	UPROPERTY(EditAnywhere)
+	FString Name;
 };
