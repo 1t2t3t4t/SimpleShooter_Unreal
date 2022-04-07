@@ -6,6 +6,7 @@
 #include "Components/CapsuleComponent.h"
 #include "SimpleShooter/SimpleShooterGameModeBase.h"
 #include "SimpleShooter/Item/DA_Ammo.h"
+#include "SimpleShooter/Item/InventoryComponent.h"
 #include "SimpleShooter/Item/Item.h"
 #include "SimpleShooter/Item/Pickable.h"
 
@@ -22,6 +23,8 @@ AShooterCharacter::AShooterCharacter()
 	CameraComponent->SetupAttachment(SpringArmComponent, USpringArmComponent::SocketName);
 	SpringArmComponent->SetupAttachment(RootComponent);
 	Health = MaxHealth;
+
+	InventoryComponent = CreateDefaultSubobject<UInventoryComponent>(TEXT("Inventory"));
 }
 
 // Called when the game starts or when spawned
@@ -31,10 +34,15 @@ void AShooterCharacter::BeginPlay()
 	Health = MaxHealth;
 	GetMesh()->HideBoneByName(TEXT("weapon_r"), PBO_None);
 
-	Gun = GetWorld()->SpawnActor<AGun>(GunClass);
-	Gun->SetOwner(this);
-	Gun->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("WeaponSocket"));
+	InventoryComponent->AppendGunClass(StartingGunClass);
 	SetupCollision();
+	EquipCurrentGun();
+}
+
+void AShooterCharacter::EquipCurrentGun()
+{
+	Gun = InventoryComponent->GetCurrentGun();
+	Gun->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("WeaponSocket"));
 }
 
 void AShooterCharacter::SetupCollision()

@@ -10,6 +10,8 @@
 #include "SimpleShooter/Item/Item.h"
 #include "ShooterCharacter.generated.h"
 
+class UInventoryComponent;
+
 UCLASS(Abstract)
 class SIMPLESHOOTER_API AShooterCharacter : public ACharacter
 {
@@ -22,7 +24,8 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	
+	void EquipCurrentGun();
+
 	UFUNCTION()
 	void OnBeginCollision(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 	                      bool bFromSweep, const FHitResult& SweepResult);
@@ -60,8 +63,11 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	UCameraComponent* CameraComponent;
 
+	UPROPERTY(VisibleAnywhere)
+	UInventoryComponent* InventoryComponent;
+
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<AGun> GunClass;
+	TSubclassOf<AGun> StartingGunClass;
 
 	UPROPERTY(EditDefaultsOnly)
 	float MaxHealth = 100.f;
