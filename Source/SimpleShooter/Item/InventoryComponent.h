@@ -30,6 +30,9 @@ public:
 	AGun* GetCurrentGun() const;
 
 	UFUNCTION(BlueprintCallable)
+	void ChangeWeapon(const bool Next);
+	
+	UFUNCTION(BlueprintCallable)
 	void AppendGun(AGun* Gun);
 
 	UFUNCTION(BlueprintCallable)

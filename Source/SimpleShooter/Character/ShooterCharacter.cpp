@@ -6,6 +6,7 @@
 #include "Components/CapsuleComponent.h"
 #include "SimpleShooter/SimpleShooterGameModeBase.h"
 #include "SimpleShooter/Item/DA_Ammo.h"
+#include "SimpleShooter/Item/DA_Gun.h"
 #include "SimpleShooter/Item/InventoryComponent.h"
 #include "SimpleShooter/Item/Item.h"
 #include "SimpleShooter/Item/Pickable.h"
@@ -41,8 +42,13 @@ void AShooterCharacter::BeginPlay()
 
 void AShooterCharacter::EquipCurrentGun()
 {
+	if (Gun)
+	{
+		Gun->SetActorHiddenInGame(true);
+	}
 	Gun = InventoryComponent->GetCurrentGun();
 	Gun->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("WeaponSocket"));
+	Gun->SetActorHiddenInGame(false);
 }
 
 void AShooterCharacter::SetupCollision()
@@ -57,24 +63,44 @@ void AShooterCharacter::OnBeginCollision(UPrimitiveComponent* OverlappedComponen
 	if (OtherActor->Implements<UPickable>() && IsPlayerControlled())
 	{
 		IPickable::Execute_Pick(OtherActor, this);
-		PickupItem(Cast<AItem>(OtherActor));
+		if (const AItem* Item = Cast<AItem>(OtherActor))
+		{
+			PickupItem(Item);
+		}
 	}
 }
 
-void AShooterCharacter::PickupItem(const AItem* Item)
+void AShooterCharacter::PickupItem(const AItem* Item) const
 {
-	if (Item == nullptr) return;
-
 	if (const UDA_Ammo* AmmoInfo = Cast<UDA_Ammo>(Item->ItemData))
 	{
 		Gun->MagazineAmmo += AmmoInfo->Amount;
 	}
+	else if (const UDA_Gun* GunItem = Cast<UDA_Gun>(Item->ItemData))
+	{
+		InventoryComponent->AppendGunClass(GunItem->GunClass);
+	}
+}
+
+void AShooterCharacter::PickupGun(AGun* ToPickUpGun) const
+{
+	InventoryComponent->AppendGun(ToPickUpGun);
+}
+
+void AShooterCharacter::ChangeWeapon()
+{
+	InventoryComponent->ChangeWeapon(true);
+	EquipCurrentGun();
 }
 
 // Called every frame
 void AShooterCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (Shooting)
+	{
+		Shoot();
+	}
 }
 
 // Called to bind functionality to input
@@ -89,8 +115,20 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	PlayerInputComponent->BindAxis(TEXT("LookRight"), this, &APawn::AddControllerYawInput);
 
 	PlayerInputComponent->BindAction(TEXT("Jump"), IE_Pressed, this, &ACharacter::Jump);
-	PlayerInputComponent->BindAction(TEXT("Shoot"), IE_Pressed, this, &AShooterCharacter::Shoot);
+	PlayerInputComponent->BindAction(TEXT("Shoot"), IE_Pressed, this, &AShooterCharacter::PressedShoot);
+	PlayerInputComponent->BindAction(TEXT("Shoot"), IE_Released, this, &AShooterCharacter::ReleasedShoot);
 	PlayerInputComponent->BindAction(TEXT("Reload"), IE_Pressed, this, &AShooterCharacter::Reload);
+	PlayerInputComponent->BindAction(TEXT("ChangeWeaponUp"), IE_Pressed, this, &AShooterCharacter::ChangeWeapon);
+}
+
+void AShooterCharacter::PressedShoot()
+{
+	Shooting = true;
+}
+
+void AShooterCharacter::ReleasedShoot()
+{
+	Shooting = false;
 }
 
 float AShooterCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator,
@@ -149,7 +187,7 @@ void AShooterCharacter::FinishReloading()
 	IsReloading = false;
 }
 
-void AShooterCharacter::Shoot()
+void AShooterCharacter::Shoot() const
 {
 	if (IsReloading)
 	{

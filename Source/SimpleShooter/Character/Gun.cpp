@@ -6,6 +6,7 @@
 #include "DrawDebugHelpers.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Particles/ParticleSystemComponent.h"
 
 // Sets default values
 AGun::AGun()
@@ -28,6 +29,7 @@ void AGun::BeginPlay()
 void AGun::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	LastShotDur += DeltaTime;
 }
 
 bool AGun::ShootLineTrace(const FVector& Loc, const FRotator Rot, FHitResult& Result) const
@@ -46,14 +48,17 @@ bool AGun::ShootLineTrace(const FVector& Loc, const FRotator Rot, FHitResult& Re
 
 void AGun::Shoot()
 {
-	if (CurrentAmmo == 0) return;
+	if (CurrentAmmo == 0 || LastShotDur < FireRate) return;
 	UGameplayStatics::SpawnEmitterAttached(GunMuzzle, MeshComponent, TEXT("MuzzleFlashSocket"));
-
+	
 	FVector Loc;
 	FRotator Rot;
 	APawn* OwnerPawn = Cast<APawn>(GetOwner());
 	if (!OwnerPawn) return;
-	OwnerPawn->GetController()->GetPlayerViewPoint(Loc, Rot);
+	if (AController* OwnerController = OwnerPawn->GetController())
+	{
+		OwnerController->GetPlayerViewPoint(Loc, Rot);
+	}
 
 	PlayShootSound();
 	CurrentAmmo--;
@@ -66,6 +71,8 @@ void AGun::Shoot()
 		Result.GetActor()->TakeDamage(Damage, DamageEvent, OwnerPawn->GetController(), OwnerPawn);
 		PlayImpactSound(Result.ImpactPoint);
 	}
+
+	LastShotDur = 0.f;
 }
 
 void AGun::PlayShootSound() const

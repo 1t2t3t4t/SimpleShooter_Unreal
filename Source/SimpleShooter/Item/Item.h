@@ -23,7 +23,7 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UDataAsset* ItemData;
 	
 	// Called every frame

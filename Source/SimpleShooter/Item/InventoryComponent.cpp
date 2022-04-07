@@ -44,6 +44,12 @@ AGun* UInventoryComponent::GetCurrentGun() const
 	return Guns[CurrentGunIndex];
 }
 
+void UInventoryComponent::ChangeWeapon(const bool Next)
+{
+	const int Addition = Next ? 1 : -1;
+	CurrentGunIndex = (CurrentGunIndex + Addition) % Guns.Num();
+}
+
 void UInventoryComponent::AppendGun(AGun* Gun)
 {
 	Guns.Add(Gun);
@@ -64,4 +70,5 @@ AGun* UInventoryComponent::RemoveCurrentGun()
 	CurrentGunIndex = NewIndex;
 	return GetCurrentGun();
 }
+
 

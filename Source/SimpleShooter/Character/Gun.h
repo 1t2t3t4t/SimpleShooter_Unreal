@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "SimpleShooter/Item/Pickable.h"
 #include "Gun.generated.h"
 
 UCLASS()
@@ -67,4 +68,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	float MaxRand = 1.f;
+
+	UPROPERTY(EditDefaultsOnly)
+	float FireRate = 0.f;
+
+	float LastShotDur = TNumericLimits<float>::Max();
 };

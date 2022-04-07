@@ -29,7 +29,9 @@ protected:
 	UFUNCTION()
 	void OnBeginCollision(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 	                      bool bFromSweep, const FHitResult& SweepResult);
-	void PickupItem(const AItem* Item);
+	void PickupItem(const AItem* Item) const;
+	void PickupGun(AGun* ToPickUpGun) const;
+	void ChangeWeapon();
 
 public:	
 	// Called every frame
@@ -37,8 +39,10 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	void PressedShoot();
+	void ReleasedShoot();
 	virtual float TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator,
-		AActor* DamageCauser) override;
+	                         AActor* DamageCauser) override;
 	void Dead();
 	void Reload();
 
@@ -54,7 +58,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void FinishReloading();
 	
-	void Shoot();
+	void Shoot() const;
 
 private:
 	UPROPERTY(VisibleAnywhere)
@@ -85,6 +89,8 @@ private:
 	AGun* Gun;
 
 	bool IsReloading = false;
+
+	bool Shooting = false;
 
 	void SetupCollision();
 	
